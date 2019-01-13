@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -7,44 +8,47 @@ namespace Challenge
 {
     public class TaskScheduler : ITaskScheduler
     {
-        PriorityQueue _queue = new PriorityQueue();        
+        PriorityQueue _queue = new PriorityQueue();
+        private int _parallelTaskNumber = 0;
 
         public void Initialize(int parallelTaskNumber)
         {
-            int maxConcurrency=parallelTaskNumber;
-            var messages = new List<string>();
-            using(SemaphoreSlim concurrencySemaphore = new SemaphoreSlim(maxConcurrency))
+            _parallelTaskNumber = parallelTaskNumber;
+        }
+
+        public void Start()
+        {
+            if (_parallelTaskNumber == 0)
+            {
+                throw new Exception();
+            }
+            
+            using(var concurrencySemaphore = new SemaphoreSlim(_parallelTaskNumber))
             {
                 List<Task> tasks = new List<Task>();
-                foreach(var msg in messages)
+                while(!_queue.IsEmpty)
                 {
-                    concurrencySemaphore.Wait(cancellationToken:null);
+                    concurrencySemaphore.Wait(CancellationToken.None);
 
-                    var t = Task.Factory.StartNew(() =>
+                    try
                     {
-
-                        try
-                        {
-                            Process(msg);
-                        }
-                        finally
-                        {
+                        var task = _queue.Dequeue().Execute();
+                        tasks.Add(task);
+                    }
+                    finally 
+                    {
                             concurrencySemaphore.Release();
-                        }
-                    });
-
-                    tasks.Add(t);
+                    }
                 }
 
-                Task.WaitAll(tasks.ToArray());
+                Task.WaitAll(tasks.ToArray(),CancellationToken.None);
             }
-
         }
 
         public bool Schedule(ITask task, Priority priority)
         {
-            throw new System.NotImplementedException();
-            
+            _queue.Enqueue(priority, task);
+            return true;
         }
 
         public Task Stop(CancellationToken token)
