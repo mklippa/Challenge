@@ -1,32 +1,50 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Challenge
 {
-    public class PriorityQueue<P, V>
+    public class PriorityQueue
     {
-        private readonly SortedDictionary<P, Queue<V>> list = new SortedDictionary<P, Queue<V>>();
+        private readonly SortedDictionary<Priority, Queue<Task>> list = new SortedDictionary<Priority, Queue<Task>>();
 
+        private int limit = 3;
+        
         public bool IsEmpty => !list.Any();
 
-        public void Enqueue(P priority, V value)
+        public void Enqueue(Priority priority, Task task)
         {
-            if (!list.TryGetValue(priority, out var q))
+            if (!list.TryGetValue(priority, out var tasks))
             {
-                q = new Queue<V>();
-                list.Add(priority, q);
+                tasks = new Queue<Task>();
+                list.Add(priority, tasks);
             }
 
-            q.Enqueue(value);
+            tasks.Enqueue(task);
         }
 
-        public V Dequeue()
+        public Task Dequeue()
         {
-            // will throw if there isn’t any first element!
-            var pair = list.First();
-            var v = pair.Value.Dequeue();
-            if (pair.Value.Count == 0) // nothing left of the top priority.
-                list.Remove(pair.Key);
+            Priority priority = Priority.Normal;
+            Queue<Task> tasks;
+            if (limit == 0)
+            {
+                limit = 3;
+                if (!list.TryGetValue(priority, out tasks))
+                {
+                    tasks = list.First().Value;
+                    priority = list.First().Key;
+                }
+            }
+            else
+            {
+                tasks = list.First().Value;
+                priority = list.First().Key;
+            }
+            var v = tasks.Dequeue();
+            if (tasks.Count == 0) 
+                list.Remove(priority);
+            limit--;
             return v;
         }
     }
