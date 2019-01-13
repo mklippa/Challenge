@@ -16,6 +16,7 @@ namespace Challenge
 
         public bool Schedule(ITask task, Priority priority)
         {
+            throw new System.NotImplementedException();
             
         }
 

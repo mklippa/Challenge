@@ -6,27 +6,27 @@ namespace Challenge
 {
     public class PriorityQueue
     {
-        private readonly SortedDictionary<Priority, Queue<Task>> list = new SortedDictionary<Priority, Queue<Task>>();
+        private readonly SortedDictionary<Priority, Queue<int>> list = new SortedDictionary<Priority, Queue<int>>();
 
         private int limit = 3;
         
         public bool IsEmpty => !list.Any();
 
-        public void Enqueue(Priority priority, Task task)
+        public void Enqueue(Priority priority, int task)
         {
             if (!list.TryGetValue(priority, out var tasks))
             {
-                tasks = new Queue<Task>();
+                tasks = new Queue<int>();
                 list.Add(priority, tasks);
             }
 
             tasks.Enqueue(task);
         }
 
-        public Task Dequeue()
+        public int Dequeue()
         {
             Priority priority = Priority.Normal;
-            Queue<Task> tasks;
+            Queue<int> tasks;
             if (limit == 0)
             {
                 limit = 3;
