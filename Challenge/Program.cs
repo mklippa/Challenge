@@ -45,7 +45,10 @@ namespace Challenge
             ts.Schedule(new CustomTask(Priority.Low), Priority.Low);
             ts.Schedule(new CustomTask(Priority.Normal), Priority.Normal);
             ts.Schedule(new CustomTask(Priority.High), Priority.High);
-            ts.Stop(new CancellationToken());
+            ts.Start();
+            //ts.Stop(new CancellationToken());
+
+            Console.ReadLine();
         }
     }
 }

@@ -10,6 +10,8 @@ namespace Challenge
     {
         PriorityQueue _queue = new PriorityQueue();
         private int _parallelTaskNumber = 0;
+        private Task _wait;
+        private CancellationToken _token;
 
         public void Initialize(int parallelTaskNumber)
         {
@@ -25,10 +27,10 @@ namespace Challenge
             
             using(var concurrencySemaphore = new SemaphoreSlim(_parallelTaskNumber))
             {
-                List<Task> tasks = new List<Task>();
+                var tasks = new List<Task>();
                 while(!_queue.IsEmpty)
                 {
-                    concurrencySemaphore.Wait(CancellationToken.None);
+                    concurrencySemaphore.Wait(_token);
 
                     try
                     {
@@ -41,7 +43,7 @@ namespace Challenge
                     }
                 }
 
-                Task.WaitAll(tasks.ToArray(),CancellationToken.None);
+                _wait = Task.WhenAll(tasks.ToArray());
             }
         }
 
@@ -53,7 +55,8 @@ namespace Challenge
 
         public Task Stop(CancellationToken token)
         {
-            throw new System.NotImplementedException();
+            _token = token;
+            return _wait;
         }
     }
 }

@@ -27,8 +27,7 @@ namespace Challenge
         
         public Task Execute()
         {
-            Console.WriteLine(_priority);
-            return Task.Delay(2000);
+            return Task.Delay(2000).ContinueWith(t=>Console.WriteLine(_priority));
         }
     }
 }
