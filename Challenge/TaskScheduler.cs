@@ -7,7 +7,7 @@ namespace Challenge
 {
     public class TaskScheduler : ITaskScheduler
     {
-        
+        PriorityQueue _queue = new PriorityQueue();        
 
         public void Initialize(int parallelTaskNumber)
         {

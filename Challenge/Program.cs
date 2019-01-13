@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 
 namespace Challenge
 {
@@ -16,24 +17,35 @@ namespace Challenge
     7.Normal
     8.High
              */
-            var p = new PriorityQueue();
-            p.Enqueue(Priority.High, 0);
-            p.Enqueue(Priority.High, 0);
-            p.Enqueue(Priority.High, 0);
-            p.Enqueue(Priority.High, 0);
-            p.Enqueue(Priority.Normal, 1);
-            p.Enqueue(Priority.Low, 2);
-            p.Enqueue(Priority.Normal, 1);
-            p.Enqueue(Priority.High, 0);
-            
-            Console.WriteLine((Priority)p.Dequeue());
-            Console.WriteLine((Priority)p.Dequeue());
-            Console.WriteLine((Priority)p.Dequeue());
-            Console.WriteLine((Priority)p.Dequeue());
-            Console.WriteLine((Priority)p.Dequeue());
-            Console.WriteLine((Priority)p.Dequeue());
-            Console.WriteLine((Priority)p.Dequeue());
-            Console.WriteLine((Priority)p.Dequeue());
+//            var p = new PriorityQueue();
+//            p.Enqueue(Priority.High, 0);
+//            p.Enqueue(Priority.High, 0);
+//            p.Enqueue(Priority.High, 0);
+//            p.Enqueue(Priority.High, 0);
+//            p.Enqueue(Priority.Normal, 1);
+//            p.Enqueue(Priority.Low, 2);
+//            p.Enqueue(Priority.Normal, 1);
+//            p.Enqueue(Priority.High, 0);
+//            
+//            Console.WriteLine((Priority)p.Dequeue());
+//            Console.WriteLine((Priority)p.Dequeue());
+//            Console.WriteLine((Priority)p.Dequeue());
+//            Console.WriteLine((Priority)p.Dequeue());
+//            Console.WriteLine((Priority)p.Dequeue());
+//            Console.WriteLine((Priority)p.Dequeue());
+//            Console.WriteLine((Priority)p.Dequeue());
+//            Console.WriteLine((Priority)p.Dequeue());
+            var ts = new TaskScheduler();
+            ts.Initialize(5);
+            ts.Schedule(new CustomTask(Priority.High), Priority.High);
+            ts.Schedule(new CustomTask(Priority.High), Priority.High);
+            ts.Schedule(new CustomTask(Priority.High), Priority.High);
+            ts.Schedule(new CustomTask(Priority.High), Priority.High);
+            ts.Schedule(new CustomTask(Priority.Normal), Priority.Normal);
+            ts.Schedule(new CustomTask(Priority.Low), Priority.Low);
+            ts.Schedule(new CustomTask(Priority.Normal), Priority.Normal);
+            ts.Schedule(new CustomTask(Priority.High), Priority.High);
+            ts.Stop(new CancellationToken());
         }
     }
 }

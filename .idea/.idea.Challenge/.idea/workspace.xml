@@ -5,12 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="155d75b0-c8ae-4271-8219-73a1ccc65571" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.Challenge/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Challenge/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Challenge/ITask.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Challenge/ITask.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Challenge/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Challenge/Program.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Challenge/TaskScheduler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Challenge/TaskScheduler.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Challenge/bin/Debug/netcoreapp2.1/Challenge.dll" beforeDir="false" afterPath="$PROJECT_DIR$/Challenge/bin/Debug/netcoreapp2.1/Challenge.dll" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Challenge/bin/Debug/netcoreapp2.1/Challenge.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/Challenge/bin/Debug/netcoreapp2.1/Challenge.pdb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Challenge/obj/Debug/netcoreapp2.1/Challenge.dll" beforeDir="false" afterPath="$PROJECT_DIR$/Challenge/obj/Debug/netcoreapp2.1/Challenge.dll" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Challenge/obj/Debug/netcoreapp2.1/Challenge.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/Challenge/obj/Debug/netcoreapp2.1/Challenge.pdb" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -40,28 +37,30 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="cs" value="1010" />
+          <entry key="cs" value="1168" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="C#" value="1010" />
+          <entry key="C#" value="1168" />
         </counts>
       </usages-collector>
     </session>
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Challenge/Program.cs">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="273">
-              <caret line="23" column="12" selection-start-line="23" selection-start-column="12" selection-end-line="23" selection-end-column="12" />
+            <state relative-caret-position="471">
+              <caret line="47" column="45" selection-start-line="47" selection-start-column="45" selection-end-line="47" selection-end-column="45" />
               <folding>
-                <marker date="1547414913860" expanded="true" signature="34:1078" ph="{...}" />
-                <marker date="1547414913860" expanded="true" signature="54:1076" ph="{...}" />
-                <marker date="1547414913860" expanded="true" signature="100:1070" ph="{...}" />
-                <marker date="1547414913860" expanded="true" signature="123:243" ph="/* 1.High ... */" />
+                <marker date="1547418682975" expanded="true" signature="6:37" ph="..." />
+                <marker date="1547418682975" expanded="true" signature="58:1830" ph="{...}" />
+                <marker date="1547418682975" expanded="true" signature="78:1828" ph="{...}" />
+                <marker date="1547418682975" expanded="true" signature="124:1822" ph="{...}" />
+                <marker date="1547418682975" expanded="true" signature="147:267" ph="/* 1.High ... */" />
+                <marker date="1547418682975" expanded="true" signature="268:1120" ph="/* var p = new PriorityQueue(); ... */" />
               </folding>
             </state>
           </provider>
@@ -85,23 +84,23 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Challenge/TaskScheduler.cs">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="493">
-              <caret line="35" column="33" lean-forward="true" selection-start-line="35" selection-start-column="33" selection-end-line="35" selection-end-column="33" />
+            <state relative-caret-position="132">
+              <caret line="9" column="51" selection-start-line="9" selection-start-column="51" selection-end-line="9" selection-end-column="51" />
               <folding>
-                <marker date="1547417263225" expanded="true" signature="6:126" ph="..." />
-                <marker date="1547417263225" expanded="true" signature="147:1426" ph="{...}" />
-                <marker date="1547417263225" expanded="true" signature="197:1424" ph="{...}" />
-                <marker date="1547417263225" expanded="true" signature="268:1141" ph="{...}" />
-                <marker date="1547417263225" expanded="true" signature="466:1130" ph="{...}" />
-                <marker date="1547417263225" expanded="true" signature="578:1068" ph="{...}" />
-                <marker date="1547417263225" expanded="true" signature="702:1013" ph="{...}" />
-                <marker date="1547417263225" expanded="true" signature="753:847" ph="{...}" />
-                <marker date="1547417263225" expanded="true" signature="879:991" ph="{...}" />
-                <marker date="1547417263225" expanded="true" signature="1202:1291" ph="{...}" />
-                <marker date="1547417263225" expanded="true" signature="1342:1418" ph="{...}" />
+                <marker date="1547417968127" expanded="true" signature="6:126" ph="..." />
+                <marker date="1547417968127" expanded="true" signature="147:1499" ph="{...}" />
+                <marker date="1547417968127" expanded="true" signature="197:1497" ph="{...}" />
+                <marker date="1547417968127" expanded="true" signature="319:1214" ph="{...}" />
+                <marker date="1547417968127" expanded="true" signature="517:1203" ph="{...}" />
+                <marker date="1547417968127" expanded="true" signature="629:1141" ph="{...}" />
+                <marker date="1547417968127" expanded="true" signature="775:1086" ph="{...}" />
+                <marker date="1547417968127" expanded="true" signature="826:920" ph="{...}" />
+                <marker date="1547417968127" expanded="true" signature="952:1064" ph="{...}" />
+                <marker date="1547417968127" expanded="true" signature="1275:1364" ph="{...}" />
+                <marker date="1547417968127" expanded="true" signature="1415:1491" ph="{...}" />
               </folding>
             </state>
           </provider>
@@ -148,13 +147,17 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Challenge/ITask.cs">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="308">
-              <caret line="14" column="5" selection-start-line="14" selection-start-column="5" selection-end-line="14" selection-end-column="5" />
+            <state relative-caret-position="449">
+              <caret line="29" column="41" selection-start-line="29" selection-start-column="41" selection-end-line="29" selection-end-column="41" />
               <folding>
-                <marker date="1547400999200" expanded="true" signature="50:321" ph="{...}" />
-                <marker date="1547400999200" expanded="true" signature="57:105" ph="/// Задача. ... " />
-                <marker date="1547400999200" expanded="true" signature="132:319" ph="{...}" />
-                <marker date="1547400999200" expanded="true" signature="147:289" ph="/// Исполнить задачу. ... " />
+                <marker date="1547418429552" expanded="true" signature="6:67" ph="..." />
+                <marker date="1547418429552" expanded="true" signature="88:691" ph="{...}" />
+                <marker date="1547418429552" expanded="true" signature="95:143" ph="/// Задача. ... " />
+                <marker date="1547418429552" expanded="true" signature="170:357" ph="{...}" />
+                <marker date="1547418429552" expanded="true" signature="185:327" ph="/// Исполнить задачу. ... " />
+                <marker date="1547418429552" expanded="true" signature="394:689" ph="{...}" />
+                <marker date="1547418429552" expanded="true" signature="491:545" ph="{...}" />
+                <marker date="1547418429552" expanded="true" signature="584:683" ph="{...}" />
               </folding>
             </state>
           </provider>
@@ -202,12 +205,12 @@
       <list>
         <option value="$PROJECT_DIR$/Challenge/Priority.cs" />
         <option value="$PROJECT_DIR$/Challenge/Readme.txt" />
-        <option value="$PROJECT_DIR$/Challenge/ITask.cs" />
         <option value="$PROJECT_DIR$/Challenge/ITaskScheduler.cs" />
         <option value="$PROJECT_DIR$/Challenge/TaskPriorityQueue.cs" />
         <option value="$PROJECT_DIR$/Challenge/PriorityQueue.cs" />
-        <option value="$PROJECT_DIR$/Challenge/Program.cs" />
         <option value="$PROJECT_DIR$/Challenge/TaskScheduler.cs" />
+        <option value="$PROJECT_DIR$/Challenge/ITask.cs" />
+        <option value="$PROJECT_DIR$/Challenge/Program.cs" />
       </list>
     </option>
   </component>
@@ -302,12 +305,12 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1547400082340</updated>
-      <workItem from="1547400083509" duration="12974000" />
+      <workItem from="1547400083509" duration="14151000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="12974000" />
+    <option name="totallyTimeSpent" value="14151000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -448,19 +451,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Challenge/Program.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="273">
-          <caret line="23" column="12" selection-start-line="23" selection-start-column="12" selection-end-line="23" selection-end-column="12" />
-          <folding>
-            <marker date="1547414913860" expanded="true" signature="34:1078" ph="{...}" />
-            <marker date="1547414913860" expanded="true" signature="54:1076" ph="{...}" />
-            <marker date="1547414913860" expanded="true" signature="100:1070" ph="{...}" />
-            <marker date="1547414913860" expanded="true" signature="123:243" ph="/* 1.High ... */" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Challenge/ITaskScheduler.cs">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="625">
@@ -477,35 +467,54 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Challenge/ITask.cs">
+    <entry file="file://$PROJECT_DIR$/Challenge/TaskScheduler.cs">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="308">
-          <caret line="14" column="5" selection-start-line="14" selection-start-column="5" selection-end-line="14" selection-end-column="5" />
+        <state relative-caret-position="132">
+          <caret line="9" column="51" selection-start-line="9" selection-start-column="51" selection-end-line="9" selection-end-column="51" />
           <folding>
-            <marker date="1547400999200" expanded="true" signature="50:321" ph="{...}" />
-            <marker date="1547400999200" expanded="true" signature="57:105" ph="/// Задача. ... " />
-            <marker date="1547400999200" expanded="true" signature="132:319" ph="{...}" />
-            <marker date="1547400999200" expanded="true" signature="147:289" ph="/// Исполнить задачу. ... " />
+            <marker date="1547417968127" expanded="true" signature="6:126" ph="..." />
+            <marker date="1547417968127" expanded="true" signature="147:1499" ph="{...}" />
+            <marker date="1547417968127" expanded="true" signature="197:1497" ph="{...}" />
+            <marker date="1547417968127" expanded="true" signature="319:1214" ph="{...}" />
+            <marker date="1547417968127" expanded="true" signature="517:1203" ph="{...}" />
+            <marker date="1547417968127" expanded="true" signature="629:1141" ph="{...}" />
+            <marker date="1547417968127" expanded="true" signature="775:1086" ph="{...}" />
+            <marker date="1547417968127" expanded="true" signature="826:920" ph="{...}" />
+            <marker date="1547417968127" expanded="true" signature="952:1064" ph="{...}" />
+            <marker date="1547417968127" expanded="true" signature="1275:1364" ph="{...}" />
+            <marker date="1547417968127" expanded="true" signature="1415:1491" ph="{...}" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Challenge/TaskScheduler.cs">
+    <entry file="file://$PROJECT_DIR$/Challenge/ITask.cs">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="493">
-          <caret line="35" column="33" lean-forward="true" selection-start-line="35" selection-start-column="33" selection-end-line="35" selection-end-column="33" />
+        <state relative-caret-position="449">
+          <caret line="29" column="41" selection-start-line="29" selection-start-column="41" selection-end-line="29" selection-end-column="41" />
           <folding>
-            <marker date="1547417263225" expanded="true" signature="6:126" ph="..." />
-            <marker date="1547417263225" expanded="true" signature="147:1426" ph="{...}" />
-            <marker date="1547417263225" expanded="true" signature="197:1424" ph="{...}" />
-            <marker date="1547417263225" expanded="true" signature="268:1141" ph="{...}" />
-            <marker date="1547417263225" expanded="true" signature="466:1130" ph="{...}" />
-            <marker date="1547417263225" expanded="true" signature="578:1068" ph="{...}" />
-            <marker date="1547417263225" expanded="true" signature="702:1013" ph="{...}" />
-            <marker date="1547417263225" expanded="true" signature="753:847" ph="{...}" />
-            <marker date="1547417263225" expanded="true" signature="879:991" ph="{...}" />
-            <marker date="1547417263225" expanded="true" signature="1202:1291" ph="{...}" />
-            <marker date="1547417263225" expanded="true" signature="1342:1418" ph="{...}" />
+            <marker date="1547418429552" expanded="true" signature="6:67" ph="..." />
+            <marker date="1547418429552" expanded="true" signature="88:691" ph="{...}" />
+            <marker date="1547418429552" expanded="true" signature="95:143" ph="/// Задача. ... " />
+            <marker date="1547418429552" expanded="true" signature="170:357" ph="{...}" />
+            <marker date="1547418429552" expanded="true" signature="185:327" ph="/// Исполнить задачу. ... " />
+            <marker date="1547418429552" expanded="true" signature="394:689" ph="{...}" />
+            <marker date="1547418429552" expanded="true" signature="491:545" ph="{...}" />
+            <marker date="1547418429552" expanded="true" signature="584:683" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Challenge/Program.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="471">
+          <caret line="47" column="45" selection-start-line="47" selection-start-column="45" selection-end-line="47" selection-end-column="45" />
+          <folding>
+            <marker date="1547418682975" expanded="true" signature="6:37" ph="..." />
+            <marker date="1547418682975" expanded="true" signature="58:1830" ph="{...}" />
+            <marker date="1547418682975" expanded="true" signature="78:1828" ph="{...}" />
+            <marker date="1547418682975" expanded="true" signature="124:1822" ph="{...}" />
+            <marker date="1547418682975" expanded="true" signature="147:267" ph="/* 1.High ... */" />
+            <marker date="1547418682975" expanded="true" signature="268:1120" ph="/* var p = new PriorityQueue(); ... */" />
           </folding>
         </state>
       </provider>
