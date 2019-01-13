@@ -11,7 +11,34 @@ namespace Challenge
 
         public void Initialize(int parallelTaskNumber)
         {
-            //_parallelTaskNumber = parallelTaskNumber;
+            int maxConcurrency=parallelTaskNumber;
+            var messages = new List<string>();
+            using(SemaphoreSlim concurrencySemaphore = new SemaphoreSlim(maxConcurrency))
+            {
+                List<Task> tasks = new List<Task>();
+                foreach(var msg in messages)
+                {
+                    concurrencySemaphore.Wait(cancellationToken:null);
+
+                    var t = Task.Factory.StartNew(() =>
+                    {
+
+                        try
+                        {
+                            Process(msg);
+                        }
+                        finally
+                        {
+                            concurrencySemaphore.Release();
+                        }
+                    });
+
+                    tasks.Add(t);
+                }
+
+                Task.WaitAll(tasks.ToArray());
+            }
+
         }
 
         public bool Schedule(ITask task, Priority priority)
