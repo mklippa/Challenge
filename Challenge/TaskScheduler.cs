@@ -8,55 +8,20 @@ namespace Challenge
 {
     public class TaskScheduler : ITaskScheduler
     {
-        PriorityQueue _queue = new PriorityQueue();
-        private int _parallelTaskNumber = 0;
-        private Task _wait;
-        private CancellationToken _token;
-
+        private ParallelTaskScheduler _taskScheduler;
         public void Initialize(int parallelTaskNumber)
         {
-            _parallelTaskNumber = parallelTaskNumber;
-        }
-
-        public void Start()
-        {
-            if (_parallelTaskNumber == 0)
-            {
-                throw new Exception();
-            }
-            
-            using(var concurrencySemaphore = new SemaphoreSlim(_parallelTaskNumber))
-            {
-                var tasks = new List<Task>();
-                while(!_queue.IsEmpty)
-                {
-                    concurrencySemaphore.Wait(_token);
-
-                    try
-                    {
-                        var task = _queue.Dequeue().Execute();
-                        tasks.Add(task);
-                    }
-                    finally 
-                    {
-                            concurrencySemaphore.Release();
-                    }
-                }
-
-                _wait = Task.WhenAll(tasks.ToArray());
-            }
+            _taskScheduler = new ParallelTaskScheduler(parallelTaskNumber);
         }
 
         public bool Schedule(ITask task, Priority priority)
         {
-            _queue.Enqueue(priority, task);
-            return true;
+            task.Execute().Start(_taskScheduler);
         }
 
         public Task Stop(CancellationToken token)
         {
-            _token = token;
-            return _wait;
+            
         }
     }
 }
