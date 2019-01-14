@@ -18,16 +18,21 @@ namespace Challenge
 
     public class CustomTask : ITask
     {
-        private readonly Priority _priority;
+        private readonly int _number;
 
-        public CustomTask(Priority priority)
+        public CustomTask(int number)
         {
-            _priority = priority;
+            this._number = number;
         }
         
         public Task Execute()
         {
-            return Task.Delay(2000).ContinueWith(t=>Console.WriteLine(_priority));
+            return new Task(() => { Write($"Running {_number} seconds"); Thread.Sleep(_number * 1000); });
+        }
+
+        void Write(string msg)
+        {
+            Console.WriteLine(DateTime.Now.ToString() + " on Thread " + Thread.CurrentThread.ManagedThreadId.ToString() + " -- " + msg);
         }
     }
 }

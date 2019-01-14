@@ -25,13 +25,13 @@ namespace Challenge
         public bool Schedule(ITask task, Priority priority)
         {
             _tasks.Add(task);
-            
+
             if (_runningOrQueuedCount < _maxDegreeOfParallelism)
             {
                 _runningOrQueuedCount++;
                 RunTasks();
             }
-            
+
             return true;
         }
 
@@ -58,19 +58,18 @@ namespace Challenge
 
                 if (taskList.Count == 1)
                 {
-                    taskList[0].Execute();
+                    taskList[0].Execute().Start();
                 }
                 else if (taskList.Count > 0)
+                {
+                    var batches = taskList.GroupBy(
+                        task => taskList.IndexOf(task) / _maxDegreeOfParallelism);
+
+                    foreach (var batch in batches)
                     {
-                        var batches = taskList.GroupBy(
-                            task => taskList.IndexOf(task) / _maxDegreeOfParallelism);
-
-                        foreach (var batch in batches)
-                        {
-                            batch.AsParallel().ForAll(task => task.Execute());
-                        }
+                        batch.AsParallel().ForAll(task => task.Execute().Start());
                     }
-
+                }
             }, null);
         }
 

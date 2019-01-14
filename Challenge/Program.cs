@@ -37,15 +37,14 @@ namespace Challenge
 //            Console.WriteLine((Priority)p.Dequeue());
             var ts = new TaskScheduler();
             ts.Initialize(5);
-            ts.Schedule(new CustomTask(Priority.High), Priority.High);
-            ts.Schedule(new CustomTask(Priority.High), Priority.High);
-            ts.Schedule(new CustomTask(Priority.High), Priority.High);
-            ts.Schedule(new CustomTask(Priority.High), Priority.High);
-            ts.Schedule(new CustomTask(Priority.Normal), Priority.Normal);
-            ts.Schedule(new CustomTask(Priority.Low), Priority.Low);
-            ts.Schedule(new CustomTask(Priority.Normal), Priority.Normal);
-            ts.Schedule(new CustomTask(Priority.High), Priority.High);
-            ts.Start();
+            ts.Schedule(new CustomTask(1), Priority.High);
+            ts.Schedule(new CustomTask(2), Priority.High);
+            ts.Schedule(new CustomTask(3), Priority.High);
+            ts.Schedule(new CustomTask(4), Priority.High);
+            ts.Schedule(new CustomTask(5), Priority.Normal);
+            ts.Schedule(new CustomTask(6), Priority.Low);
+            ts.Schedule(new CustomTask(7), Priority.Normal);
+            ts.Schedule(new CustomTask(8), Priority.High);
             //ts.Stop(new CancellationToken());
 
             Console.ReadLine();
