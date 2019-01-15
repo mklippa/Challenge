@@ -5,8 +5,9 @@ namespace Challenge
 {
     public class TaskQueue
     {
-        private readonly SortedDictionary<Priority, Queue<ITask>> _prioritizedTasks = new SortedDictionary<Priority, Queue<ITask>>();
         private const int Limit = 3;
+        private readonly SortedDictionary<Priority, Queue<ITask>> _prioritizedTasks = new SortedDictionary<Priority, Queue<ITask>>();
+        private readonly int _normalPosition = Limit + 1;
         private int _counter = 0;
         public bool IsEmpty => !_prioritizedTasks.Any();
 
@@ -23,11 +24,10 @@ namespace Challenge
 
         public ITask Dequeue()
         {
-            var normalPosition = Limit + 1;
-            _counter = _counter % normalPosition + 1;
+            _counter = _counter % _normalPosition + 1;
 
             var priority = Priority.Normal;
-            if (_counter != normalPosition || !_prioritizedTasks.TryGetValue(priority, out var tasks))
+            if (_counter != _normalPosition || !_prioritizedTasks.TryGetValue(priority, out var tasks))
             {
                 var first = _prioritizedTasks.First();
                 tasks = first.Value;
