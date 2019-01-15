@@ -37,7 +37,7 @@ namespace Challenge
 
         private void RunTasks()
         {
-            ThreadPool.UnsafeQueueUserWorkItem(_ =>
+            Task.Run(() =>
             {
                 List<ITask> taskList = new List<ITask>();
 
@@ -58,7 +58,7 @@ namespace Challenge
 
                 if (taskList.Count == 1)
                 {
-                    taskList[0].Execute().Start();
+                    taskList[0].Execute();
                 }
                 else if (taskList.Count > 0)
                 {
@@ -67,15 +67,15 @@ namespace Challenge
 
                     foreach (var batch in batches)
                     {
-                        batch.AsParallel().ForAll(task => task.Execute().Start());
+                        batch.AsParallel().ForAll(task => task.Execute());
                     }
                 }
-            }, null);
+            });
         }
 
         public Task Stop(CancellationToken token)
         {
-            throw new NotImplementedException();
+            _token = token;
         }
     }
 }

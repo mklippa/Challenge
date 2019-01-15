@@ -36,7 +36,7 @@ namespace Challenge
 //            Console.WriteLine((Priority)p.Dequeue());
 //            Console.WriteLine((Priority)p.Dequeue());
             var ts = new TaskScheduler();
-            ts.Initialize(5);
+            ts.Initialize(2);
             ts.Schedule(new CustomTask(1), Priority.High);
             ts.Schedule(new CustomTask(2), Priority.High);
             ts.Schedule(new CustomTask(3), Priority.High);
