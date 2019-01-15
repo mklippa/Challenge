@@ -75,7 +75,7 @@ namespace Challenge
 
         public Task Stop(CancellationToken token)
         {
-            _token = token;
+            return null;
         }
     }
 }

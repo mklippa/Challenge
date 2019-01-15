@@ -23,10 +23,11 @@ namespace Challenge
 
         public ITask Dequeue()
         {
-            _counter = _counter % Limit + 1;
+            var normalPosition = Limit + 1;
+            _counter = _counter % normalPosition + 1;
 
             var priority = Priority.Normal;
-            if (_counter != Limit || !_prioritizedTasks.TryGetValue(priority, out var tasks))
+            if (_counter != normalPosition || !_prioritizedTasks.TryGetValue(priority, out var tasks))
             {
                 var first = _prioritizedTasks.First();
                 tasks = first.Value;

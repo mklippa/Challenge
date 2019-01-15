@@ -22,5 +22,10 @@ namespace Challenge
         {
             Console.WriteLine(DateTime.Now.ToString() + " on Thread " + Thread.CurrentThread.ManagedThreadId.ToString() + " -- " + msg);
         }
+
+        public override string ToString()
+        {
+            return _number.ToString();
+        } 
     }
 }
