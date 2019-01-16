@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # 
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Challenge", "Challenge\Challenge.csproj", "{29D1CDC0-059E-4AFF-8991-2BC4B5CB8C48}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Challenge.Lib", "Challenge.Lib\Challenge.Lib.csproj", "{29D1CDC0-059E-4AFF-8991-2BC4B5CB8C48}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Challenge.Tests", "Challenge.Tests\Challenge.Tests.csproj", "{B0181AFE-0BA6-4971-8E26-34621F36754E}"
 EndProject
