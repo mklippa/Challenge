@@ -237,5 +237,106 @@ namespace Challenge.Tests
             Assert.AreEqual(highPriorityTask4, task4);
             Assert.AreEqual(highPriorityTask5, task5);
         }
+
+        [Test]
+        public void Dequeue_ReturnLowHighHighHighHighNormal_IfLowHighHighHighHighNormalWereEnqueued()
+        {
+            // Arrange
+            var lowPriorityTask = Mock.Of<ITask>();
+            var highPriorityTask1 = Mock.Of<ITask>();
+            var highPriorityTask2 = Mock.Of<ITask>();
+            var highPriorityTask3 = Mock.Of<ITask>();
+            var highPriorityTask4 = Mock.Of<ITask>();
+            var normalPriorityTask = Mock.Of<ITask>();
+            _taskQueue.Enqueue(Priority.Low, lowPriorityTask);
+            _taskQueue.Enqueue(Priority.High, highPriorityTask1);
+            _taskQueue.Enqueue(Priority.High, highPriorityTask2);
+            _taskQueue.Enqueue(Priority.High, highPriorityTask3);
+            _taskQueue.Enqueue(Priority.High, highPriorityTask4);
+            _taskQueue.Enqueue(Priority.Normal, normalPriorityTask);
+
+            // Act
+            var task1 = _taskQueue.Dequeue();
+            var task2 = _taskQueue.Dequeue();
+            var task3 = _taskQueue.Dequeue();
+            var task4 = _taskQueue.Dequeue();
+            var task5 = _taskQueue.Dequeue();
+            var task6 = _taskQueue.Dequeue();
+
+            // Assert
+            Assert.AreEqual(highPriorityTask1, task1);
+            Assert.AreEqual(highPriorityTask2, task2);
+            Assert.AreEqual(highPriorityTask3, task3);
+            Assert.AreEqual(normalPriorityTask, task4);
+            Assert.AreEqual(highPriorityTask4, task5);
+            Assert.AreEqual(lowPriorityTask, task6);
+        }
+
+        [Test]
+        public void Dequeue_СomplexTest()
+        {
+            // Arrange
+            var lowPriorityTask = Mock.Of<ITask>();
+            var normalPriorityTask1 = Mock.Of<ITask>();
+            var highPriorityTask1 = Mock.Of<ITask>();
+            var normalPriorityTask2 = Mock.Of<ITask>();
+            var highPriorityTask2 = Mock.Of<ITask>();
+            var highPriorityTask3 = Mock.Of<ITask>();
+            var highPriorityTask4 = Mock.Of<ITask>();
+            var highPriorityTask5 = Mock.Of<ITask>();
+            var highPriorityTask6 = Mock.Of<ITask>();
+            var highPriorityTask7 = Mock.Of<ITask>();
+            var highPriorityTask8 = Mock.Of<ITask>();
+            var highPriorityTask9 = Mock.Of<ITask>();
+            var highPriorityTask10 = Mock.Of<ITask>();
+            var highPriorityTask11 = Mock.Of<ITask>();
+            _taskQueue.Enqueue(Priority.Low, lowPriorityTask);
+            _taskQueue.Enqueue(Priority.Normal, normalPriorityTask1);
+            _taskQueue.Enqueue(Priority.High, highPriorityTask1);
+            _taskQueue.Enqueue(Priority.Normal, normalPriorityTask2);
+            _taskQueue.Enqueue(Priority.High, highPriorityTask2);
+            _taskQueue.Enqueue(Priority.High, highPriorityTask3);
+            _taskQueue.Enqueue(Priority.High, highPriorityTask4);
+            _taskQueue.Enqueue(Priority.High, highPriorityTask5);
+            _taskQueue.Enqueue(Priority.High, highPriorityTask6);
+            _taskQueue.Enqueue(Priority.High, highPriorityTask7);
+            _taskQueue.Enqueue(Priority.High, highPriorityTask8);
+            _taskQueue.Enqueue(Priority.High, highPriorityTask9);
+            _taskQueue.Enqueue(Priority.High, highPriorityTask10);
+            _taskQueue.Enqueue(Priority.High, highPriorityTask11);
+
+            // Act
+            var task1 = _taskQueue.Dequeue();
+            var task2 = _taskQueue.Dequeue();
+            var task3 = _taskQueue.Dequeue();
+            var task4 = _taskQueue.Dequeue();
+            var task5 = _taskQueue.Dequeue();
+            var task6 = _taskQueue.Dequeue();
+            var task7 = _taskQueue.Dequeue();
+            var task8 = _taskQueue.Dequeue();
+            var task9 = _taskQueue.Dequeue();
+            var task10 = _taskQueue.Dequeue();
+            var task11 = _taskQueue.Dequeue();
+            var task12 = _taskQueue.Dequeue();
+            var task13 = _taskQueue.Dequeue();
+            var task14 = _taskQueue.Dequeue();
+
+            // Assert
+            Assert.AreEqual(highPriorityTask1, task1);
+            Assert.AreEqual(highPriorityTask2, task2);
+            Assert.AreEqual(highPriorityTask3, task3);
+            Assert.AreEqual(normalPriorityTask1, task4);
+            Assert.AreEqual(highPriorityTask4, task5);
+            Assert.AreEqual(highPriorityTask5, task6);
+            Assert.AreEqual(highPriorityTask6, task7);
+            Assert.AreEqual(normalPriorityTask2, task8);
+            Assert.AreEqual(highPriorityTask7, task9);
+            Assert.AreEqual(highPriorityTask8, task10);
+            Assert.AreEqual(highPriorityTask9, task11);
+            Assert.AreEqual(highPriorityTask10, task12);
+            Assert.AreEqual(highPriorityTask11, task13);
+            Assert.AreEqual(lowPriorityTask, task14);
+            Assert.Throws<InvalidOperationException>(() => _taskQueue.Dequeue());
+        }
     }
 }
