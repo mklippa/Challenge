@@ -12,20 +12,36 @@ namespace Challenge
     {
         private int _maxDegreeOfParallelism;
         private volatile int _runningOrQueuedCount;
-        private readonly BlockingCollection<ITask> _taskQueue = new BlockingCollection<ITask>();
-        private readonly List<Task> _tasks = new List<Task>();
+        private BlockingCollection<ITask> _taskQueue;
+        private List<Task> _tasks;
         private CancellationToken _token;
+        private bool _isAlive;
 
         public void Initialize(int parallelTaskNumber)
         {
+            if (_isAlive)
+            {
+                throw new InvalidOperationException("Scheduler has already been initialized.");
+            }
+
             if (parallelTaskNumber < 1)
+            {
                 throw new ArgumentOutOfRangeException(nameof(parallelTaskNumber));
+            }
 
             _maxDegreeOfParallelism = parallelTaskNumber;
+            _taskQueue = new BlockingCollection<ITask>();
+            _tasks = new List<Task>();
+            _isAlive = true;
         }
 
         public bool Schedule(ITask task, Priority priority)
         {
+            if (!_isAlive)
+            {
+                return false;
+            }
+
             _taskQueue.Add(task);
 
             if (_runningOrQueuedCount < _maxDegreeOfParallelism)
@@ -77,6 +93,12 @@ namespace Challenge
 
         public Task Stop(CancellationToken token)
         {
+            if(!_isAlive)
+            {
+                return Task.CompletedTask;
+            }
+
+            _isAlive = false;
             _token = token;
             return Task.WhenAll(_tasks);
         }
