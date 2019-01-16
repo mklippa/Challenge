@@ -12,7 +12,7 @@ namespace Challenge
     {
         private int _maxDegreeOfParallelism;
         private volatile int _runningOrQueuedCount;
-        private BlockingCollection<ITask> _taskQueue;
+        private TaskQueue _taskQueue;
         private List<Task> _tasks;
         private CancellationToken _token;
         private bool _isAlive;
@@ -30,7 +30,7 @@ namespace Challenge
             }
 
             _maxDegreeOfParallelism = parallelTaskNumber;
-            _taskQueue = new BlockingCollection<ITask>();
+            _taskQueue = new TaskQueue();
             _tasks = new List<Task>();
             _isAlive = true;
         }
@@ -42,7 +42,7 @@ namespace Challenge
                 return false;
             }
 
-            _taskQueue.Add(task);
+            lock(_taskQueue) _taskQueue.Enqueue(priority, task);
 
             if (_runningOrQueuedCount < _maxDegreeOfParallelism)
             {
@@ -63,13 +63,13 @@ namespace Challenge
                 {
                     lock (_taskQueue)
                     {
-                        if (_taskQueue.Count == 0)
+                        if (_taskQueue.IsEmpty)
                         {
                             _runningOrQueuedCount--;
                             break;
                         }
 
-                        var t = _taskQueue.Take();
+                        var t = _taskQueue.Dequeue();
                         taskList.Add(t);
                     }
                 }
