@@ -6,26 +6,26 @@ namespace Challenge
 {
     public class CustomTask : ITask
     {
-        private readonly int _number;
+        private readonly int _duration;
 
-        public CustomTask(int number)
+        public CustomTask(int duration)
         {
-            this._number = number;
+            this._duration = duration;
         }
         
         public Task Execute()
         {
-            return Task.Run(() => { Write($"Running {_number} seconds"); Thread.Sleep(_number * 1000); });
+            return Task.Run(() =>
+            {
+                Write($"Running {_duration} seconds");
+                Thread.Sleep(_duration * 1000);
+                Console.WriteLine($"{_duration}-second task is finished");
+            });
         }
 
-        void Write(string msg)
+        private void Write(string msg)
         {
-            Console.WriteLine(DateTime.Now.ToString() + " on Thread " + Thread.CurrentThread.ManagedThreadId.ToString() + " -- " + msg);
+            Console.WriteLine($"{DateTime.Now} on Thread {Thread.CurrentThread.ManagedThreadId} -- {msg}");
         }
-
-        public override string ToString()
-        {
-            return _number.ToString();
-        } 
     }
 }

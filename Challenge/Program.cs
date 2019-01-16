@@ -30,8 +30,9 @@ namespace Challenge
 
             while (!q.IsEmpty)
             {
-                Console.WriteLine((Priority)int.Parse(q.Dequeue().ToString()));
+                q.Dequeue().Execute();
             }
+            Console.ReadLine();
         }
     }
 }
