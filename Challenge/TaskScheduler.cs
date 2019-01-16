@@ -12,7 +12,9 @@ namespace Challenge
     {
         private int _maxDegreeOfParallelism;
         private volatile int _runningOrQueuedCount;
-        private readonly BlockingCollection<ITask> _tasks = new BlockingCollection<ITask>();
+        private readonly BlockingCollection<ITask> _taskQueue = new BlockingCollection<ITask>();
+        private readonly List<Task> _tasks = new List<Task>();
+        private CancellationToken _token;
 
         public void Initialize(int parallelTaskNumber)
         {
@@ -24,7 +26,7 @@ namespace Challenge
 
         public bool Schedule(ITask task, Priority priority)
         {
-            _tasks.Add(task);
+            _taskQueue.Add(task);
 
             if (_runningOrQueuedCount < _maxDegreeOfParallelism)
             {
@@ -37,21 +39,21 @@ namespace Challenge
 
         private void RunTasks()
         {
-            Task.Run(() =>
+            _tasks.Add(Task.Run(() =>
             {
                 List<ITask> taskList = new List<ITask>();
 
                 while (true)
                 {
-                    lock (_tasks)
+                    lock (_taskQueue)
                     {
-                        if (_tasks.Count == 0)
+                        if (_taskQueue.Count == 0)
                         {
                             _runningOrQueuedCount--;
                             break;
                         }
 
-                        var t = _tasks.Take();
+                        var t = _taskQueue.Take();
                         taskList.Add(t);
                     }
                 }
@@ -70,12 +72,13 @@ namespace Challenge
                         batch.AsParallel().ForAll(task => task.Execute());
                     }
                 }
-            });
+            }, _token));
         }
 
         public Task Stop(CancellationToken token)
         {
-            return null;
+            _token = token;
+            return Task.WhenAll(_tasks);
         }
     }
 }
