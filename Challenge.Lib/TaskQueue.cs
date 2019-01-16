@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Challenge
+namespace Challenge.Lib
 {
     public class TaskQueue
     {

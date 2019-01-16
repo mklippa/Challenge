@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 
-namespace Challenge
+namespace Challenge.Lib
 {
     /// <summary>
     /// Задача.

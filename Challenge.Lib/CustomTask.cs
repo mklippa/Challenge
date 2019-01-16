@@ -2,7 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Challenge
+namespace Challenge.Lib
 {
     public class CustomTask : ITask
     {

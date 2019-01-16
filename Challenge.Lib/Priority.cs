@@ -1,4 +1,4 @@
-namespace Challenge
+namespace Challenge.Lib
 {
     /// <summary>
     /// Приоритет исполнения задачи.

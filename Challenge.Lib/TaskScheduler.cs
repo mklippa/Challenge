@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Challenge
+namespace Challenge.Lib
 {
     public class TaskScheduler : ITaskScheduler
     {
