@@ -30,6 +30,7 @@ namespace Challenge
             }
 
             _maxDegreeOfParallelism = parallelTaskNumber;
+            _runningOrQueuedCount = 0;
             _taskQueue = new TaskQueue();
             _tasks = new List<Task>();
             _isAlive = true;
@@ -57,7 +58,7 @@ namespace Challenge
         {
             _tasks.Add(Task.Run(() =>
             {
-                List<ITask> taskList = new List<ITask>();
+                var taskList = new List<ITask>();
 
                 while (true)
                 {
@@ -72,6 +73,11 @@ namespace Challenge
                         var t = _taskQueue.Dequeue();
                         taskList.Add(t);
                     }
+                }
+
+                if (_token.IsCancellationRequested)
+                {
+                    _token.ThrowIfCancellationRequested();
                 }
 
                 if (taskList.Count == 1)
@@ -95,7 +101,7 @@ namespace Challenge
         {
             if(!_isAlive)
             {
-                return Task.CompletedTask;
+                throw new InvalidOperationException("Scheduler is not running.");
             }
 
             _isAlive = false;
