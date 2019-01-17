@@ -56,7 +56,7 @@ namespace Challenge.Lib
 
         private void RunTasks()
         {
-            _tasks.Add(Task.Run(() =>
+            lock(_tasks) _tasks.Add(Task.Run(() =>
             {
                 var taskList = new List<ITask>();
 
@@ -82,7 +82,7 @@ namespace Challenge.Lib
 
                 if (taskList.Count == 1)
                 {
-                    taskList[0].Execute();
+                    lock(_tasks) _tasks.Add(taskList[0].Execute());
                 }
                 else if (taskList.Count > 0)
                 {
@@ -91,7 +91,7 @@ namespace Challenge.Lib
 
                     foreach (var batch in batches)
                     {
-                        batch.AsParallel().ForAll(task => task.Execute());
+                        batch.AsParallel().ForAll(task => { lock (_tasks) _tasks.Add(task.Execute()); });
                     }
                 }
             }, _token));
