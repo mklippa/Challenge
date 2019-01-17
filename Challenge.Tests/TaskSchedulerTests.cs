@@ -114,9 +114,9 @@ namespace Challenge.Tests
             var task2 = new Mock<ITask>();
             var task3 = new Mock<ITask>();
             var actual = new List<int>();
-            task1.Setup(t => t.Execute()).Returns(Task.Run(() => { Thread.Sleep(1000); actual.Add(1); }));
-            task2.Setup(t => t.Execute()).Returns(Task.Run(() => { Thread.Sleep(1000); actual.Add(2); }));
-            task3.Setup(t => t.Execute()).Returns(Task.Run(() => { Thread.Sleep(1000); actual.Add(3); }));
+            task1.Setup(t => t.Execute()).Returns(Task.Run(() => { Thread.Sleep(1000); lock(actual) actual.Add(1); }));
+            task2.Setup(t => t.Execute()).Returns(Task.Run(() => { Thread.Sleep(1000); lock(actual) actual.Add(2); }));
+            task3.Setup(t => t.Execute()).Returns(Task.Run(() => { Thread.Sleep(1000); lock(actual) actual.Add(3); }));
 
             _taskScheduler.Initialize(3);
 
