@@ -105,6 +105,7 @@ namespace Challenge.Tests
         }
 
         [Test]
+        // complete all scheduled tasks in random order  when there are more parallel tasks
         public async Task TestAsync()
         {
             // Arrange
@@ -128,7 +129,50 @@ namespace Challenge.Tests
 
             // Assert
             CollectionAssert.AreEquivalent(expected, actual);
-
         }
+
+        // 1 x ||, 5 tasks, first - long, 2-5 correct order
+        [Test]
+        public async Task Test2()
+        {
+            // Arrange
+            var expected = new[] { 1, 2, 3, 5, 4, 8, 7, 6 };
+
+            var task1 = new Mock<ITask>();
+            var task2 = new Mock<ITask>();
+            var task3 = new Mock<ITask>();
+            var task4 = new Mock<ITask>();
+            var task5 = new Mock<ITask>();
+            var task6 = new Mock<ITask>();
+            var task7 = new Mock<ITask>();
+            var task8 = new Mock<ITask>();
+            var actual = new List<int>();
+            task1.Setup(t => t.Execute()).Returns(Task.Run(() => { lock(actual) actual.Add(1); Thread.Sleep(1000); }));
+            task2.Setup(t => t.Execute()).Returns(Task.Run(() => { lock(actual) actual.Add(2); Thread.Sleep(1000); }));
+            task3.Setup(t => t.Execute()).Returns(Task.Run(() => { lock(actual) actual.Add(3); Thread.Sleep(1000); }));
+            task4.Setup(t => t.Execute()).Returns(Task.Run(() => { lock(actual) actual.Add(4); Thread.Sleep(1000); }));
+            task5.Setup(t => t.Execute()).Returns(Task.Run(() => { lock(actual) actual.Add(5); Thread.Sleep(1000); }));
+            task6.Setup(t => t.Execute()).Returns(Task.Run(() => { lock(actual) actual.Add(6); Thread.Sleep(1000); }));
+            task7.Setup(t => t.Execute()).Returns(Task.Run(() => { lock(actual) actual.Add(7); Thread.Sleep(1000); }));
+            task8.Setup(t => t.Execute()).Returns(Task.Run(() => { lock(actual) actual.Add(8); Thread.Sleep(1000); }));
+            _taskScheduler.Initialize(1);
+
+            // Act 
+            _taskScheduler.Schedule(task1.Object, Priority.High);
+            _taskScheduler.Schedule(task2.Object, Priority.High);
+            _taskScheduler.Schedule(task3.Object, Priority.High);
+            _taskScheduler.Schedule(task4.Object, Priority.High);
+            _taskScheduler.Schedule(task5.Object, Priority.Normal);
+            _taskScheduler.Schedule(task6.Object, Priority.Low);
+            _taskScheduler.Schedule(task7.Object, Priority.Normal);
+            _taskScheduler.Schedule(task8.Object, Priority.High);
+            await _taskScheduler.Stop(CancellationToken.None);
+
+            // Assert
+            CollectionAssert.AreEqual(expected, actual);
+        }
+        // 5 x ||, 5 tasks, first - long (not necessary), 1-5 random order
+
+        // cancell - выполнятся не все
     }
 }
