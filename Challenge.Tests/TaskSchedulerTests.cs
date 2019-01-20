@@ -269,7 +269,7 @@ namespace Challenge.Tests
         }
 
         [Test]
-        public async Task Stop_CancelsAllTasksBeforeRun_IfCancellationWasCalledImmediately()
+        public async Task Stop_CancelsAllTasksBeforeRun_IfCancellationWasCalledImmediately_Async()
         {
             // Arrange
             var actualStarted = new List<int>();
@@ -301,7 +301,7 @@ namespace Challenge.Tests
         }
 
         [Test]
-        public async Task Stop_CancelsAllRunningTasks_IfCancellationWasCalledBeforeTheirCompletition()
+        public async Task Stop_CancelsAllRunningTasks_IfCancellationWasCalledBeforeTheirCompletition_Async()
         {
             // Arrange
             const int delayBeforeCancellation = 1000;
@@ -341,7 +341,7 @@ namespace Challenge.Tests
         }
 
         [Test]
-        public async Task Stop_CancelsSomeRunningTasks_IfCancellationWasCalledBeforeTheirCompletition()
+        public async Task Stop_CancelsSomeRunningTasks_IfCancellationWasCalledBeforeTheirCompletition_Async()
         {
             // Arrange
             const int delayBeforeCancellation = 4000;
@@ -385,7 +385,7 @@ namespace Challenge.Tests
         }
 
         [Test]
-        public async Task Stop_IgnoreAllRunningTasks_IfCancellationWasCalledAfterTheirCompletition()
+        public async Task Stop_IgnoreAllRunningTasks_IfCancellationWasCalledAfterTheirCompletition_Async()
         {
             // Arrange
             const int delayBeforeCancellation = 4000;
