@@ -115,9 +115,9 @@ namespace Challenge.Tests
             var task2 = new Mock<ITask>();
             var task3 = new Mock<ITask>();
             var actual = new List<int>();
-            task1.Setup(t => t.Execute()).Returns(Task.Run(() => { Thread.Sleep(1000); lock(actual) actual.Add(1); }));
-            task2.Setup(t => t.Execute()).Returns(Task.Run(() => { Thread.Sleep(1000); lock(actual) actual.Add(2); }));
-            task3.Setup(t => t.Execute()).Returns(Task.Run(() => { Thread.Sleep(1000); lock(actual) actual.Add(3); }));
+            task1.Setup(t => t.Execute()).Returns(Task.Run(() => { Thread.Sleep(1000); lock (actual) actual.Add(1); }));
+            task2.Setup(t => t.Execute()).Returns(Task.Run(() => { Thread.Sleep(1000); lock (actual) actual.Add(2); }));
+            task3.Setup(t => t.Execute()).Returns(Task.Run(() => { Thread.Sleep(1000); lock (actual) actual.Add(3); }));
 
             _taskScheduler.Initialize(3);
 
@@ -138,34 +138,26 @@ namespace Challenge.Tests
             // Arrange
             var expected = new[] { 1, 2, 3, 5, 4, 8, 7, 6 };
 
-            var task1 = new Mock<ITask>();
-            var task2 = new Mock<ITask>();
-            var task3 = new Mock<ITask>();
-            var task4 = new Mock<ITask>();
-            var task5 = new Mock<ITask>();
-            var task6 = new Mock<ITask>();
-            var task7 = new Mock<ITask>();
-            var task8 = new Mock<ITask>();
             var actual = new List<int>();
-            task1.Setup(t => t.Execute()).Returns(Task.Run(() => { lock(actual) actual.Add(1); Thread.Sleep(1000); }));
-            task2.Setup(t => t.Execute()).Returns(Task.Run(() => { lock(actual) actual.Add(2); Thread.Sleep(1000); }));
-            task3.Setup(t => t.Execute()).Returns(Task.Run(() => { lock(actual) actual.Add(3); Thread.Sleep(1000); }));
-            task4.Setup(t => t.Execute()).Returns(Task.Run(() => { lock(actual) actual.Add(4); Thread.Sleep(1000); }));
-            task5.Setup(t => t.Execute()).Returns(Task.Run(() => { lock(actual) actual.Add(5); Thread.Sleep(1000); }));
-            task6.Setup(t => t.Execute()).Returns(Task.Run(() => { lock(actual) actual.Add(6); Thread.Sleep(1000); }));
-            task7.Setup(t => t.Execute()).Returns(Task.Run(() => { lock(actual) actual.Add(7); Thread.Sleep(1000); }));
-            task8.Setup(t => t.Execute()).Returns(Task.Run(() => { lock(actual) actual.Add(8); Thread.Sleep(1000); }));
+            var task1 = new TestTask(actual, 1);
+            var task2 = new TestTask(actual, 2);
+            var task3 = new TestTask(actual, 3);
+            var task4 = new TestTask(actual, 4);
+            var task5 = new TestTask(actual, 5);
+            var task6 = new TestTask(actual, 6);
+            var task7 = new TestTask(actual, 7);
+            var task8 = new TestTask(actual, 8);
             _taskScheduler.Initialize(1);
 
             // Act 
-            _taskScheduler.Schedule(task1.Object, Priority.High);
-            _taskScheduler.Schedule(task2.Object, Priority.High);
-            _taskScheduler.Schedule(task3.Object, Priority.High);
-            _taskScheduler.Schedule(task4.Object, Priority.High);
-            _taskScheduler.Schedule(task5.Object, Priority.Normal);
-            _taskScheduler.Schedule(task6.Object, Priority.Low);
-            _taskScheduler.Schedule(task7.Object, Priority.Normal);
-            _taskScheduler.Schedule(task8.Object, Priority.High);
+            _taskScheduler.Schedule(task1, Priority.High);
+            _taskScheduler.Schedule(task2, Priority.High);
+            _taskScheduler.Schedule(task3, Priority.High);
+            _taskScheduler.Schedule(task4, Priority.High);
+            _taskScheduler.Schedule(task5, Priority.Normal);
+            _taskScheduler.Schedule(task6, Priority.Low);
+            _taskScheduler.Schedule(task7, Priority.Normal);
+            _taskScheduler.Schedule(task8, Priority.High);
             await _taskScheduler.Stop(CancellationToken.None);
 
             // Assert
@@ -174,5 +166,24 @@ namespace Challenge.Tests
         // 5 x ||, 5 tasks, first - long (not necessary), 1-5 random order
 
         // cancell - выполнятся не все
+    }
+
+    class TestTask : ITask
+    {
+        private List<int> actual;
+        private int order;
+        private readonly int delay;
+
+        public TestTask(List<int> actual, int order, int delay = 1)
+        {
+            this.actual = actual;
+            this.order = order;
+            this.delay = delay;
+        }
+
+        public Task Execute()
+        {
+            return Task.Run(() => { lock (actual) actual.Add(order); Thread.Sleep(delay * 1000); });
+        }
     }
 }
