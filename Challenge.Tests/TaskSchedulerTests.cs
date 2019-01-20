@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Challenge.Lib;
@@ -111,20 +112,17 @@ namespace Challenge.Tests
             // Arrange
             var expected = new[] { 1, 2, 3 };
 
-            var task1 = new Mock<ITask>();
-            var task2 = new Mock<ITask>();
-            var task3 = new Mock<ITask>();
             var actual = new List<int>();
-            task1.Setup(t => t.Execute()).Returns(Task.Run(() => { Thread.Sleep(1000); lock (actual) actual.Add(1); }));
-            task2.Setup(t => t.Execute()).Returns(Task.Run(() => { Thread.Sleep(1000); lock (actual) actual.Add(2); }));
-            task3.Setup(t => t.Execute()).Returns(Task.Run(() => { Thread.Sleep(1000); lock (actual) actual.Add(3); }));
+            var task1 = new TestTask(started: actual, order: 1);
+            var task2 = new TestTask(started: actual, order: 2);
+            var task3 = new TestTask(started: actual, order: 3);
 
             _taskScheduler.Initialize(3);
 
             // Act
-            _taskScheduler.Schedule(task1.Object, Priority.Low);
-            _taskScheduler.Schedule(task2.Object, Priority.Normal);
-            _taskScheduler.Schedule(task3.Object, Priority.High);
+            _taskScheduler.Schedule(task1, Priority.Low);
+            _taskScheduler.Schedule(task2, Priority.Normal);
+            _taskScheduler.Schedule(task3, Priority.High);
             await _taskScheduler.Stop(CancellationToken.None);
 
             // Assert
@@ -139,14 +137,14 @@ namespace Challenge.Tests
             var expected = new[] { 1, 2, 3, 5, 4, 8, 7, 6 };
 
             var actual = new List<int>();
-            var task1 = new TestTask(actual, 1);
-            var task2 = new TestTask(actual, 2);
-            var task3 = new TestTask(actual, 3);
-            var task4 = new TestTask(actual, 4);
-            var task5 = new TestTask(actual, 5);
-            var task6 = new TestTask(actual, 6);
-            var task7 = new TestTask(actual, 7);
-            var task8 = new TestTask(actual, 8);
+            var task1 = new TestTask(started: actual, order: 1);
+            var task2 = new TestTask(started: actual, order: 2);
+            var task3 = new TestTask(started: actual, order: 3);
+            var task4 = new TestTask(started: actual, order: 4);
+            var task5 = new TestTask(started: actual, order: 5);
+            var task6 = new TestTask(started: actual, order: 6);
+            var task7 = new TestTask(started: actual, order: 7);
+            var task8 = new TestTask(started: actual, order: 8);
             _taskScheduler.Initialize(1);
 
             // Act 
@@ -163,27 +161,195 @@ namespace Challenge.Tests
             // Assert
             CollectionAssert.AreEqual(expected, actual);
         }
-        // 5 x ||, 5 tasks, first - long (not necessary), 1-5 random order
-
-        // cancell - выполнятся не все
-    }
-
-    class TestTask : ITask
-    {
-        private List<int> actual;
-        private int order;
-        private readonly int delay;
-
-        public TestTask(List<int> actual, int order, int delay = 1)
+        // 5 x ||, 5 tasks, first - long (not necessary), 1-5 random order, but devided in half
+        [Test]
+        public async Task Test3()
         {
-            this.actual = actual;
-            this.order = order;
-            this.delay = delay;
+            // Arrange
+            var expectedFirstPortion = new[] { 1, 2, 3, 4 };
+            var expectedSecondPortion = new[] { 5, 6, 7, 8 };
+
+            var actual = new List<int>();
+            // the first portion
+            var task1 = new TestTask(started: actual, order: 1);
+            var task2 = new TestTask(started: actual, order: 2);
+            var task3 = new TestTask(started: actual, order: 3);
+            var task4 = new TestTask(started: actual, order: 4);
+            // the second portion
+            var task5 = new TestTask(started: actual, order: 5);
+            var task6 = new TestTask(started: actual, order: 6);
+            var task7 = new TestTask(started: actual, order: 7);
+            var task8 = new TestTask(started: actual, order: 8);
+            // parallelTaskNumber == portion size
+            _taskScheduler.Initialize(4);
+
+            // Act
+            // schedule the first portion
+            _taskScheduler.Schedule(task1, Priority.High);
+            _taskScheduler.Schedule(task2, Priority.High);
+            _taskScheduler.Schedule(task3, Priority.Normal);
+            _taskScheduler.Schedule(task4, Priority.High);
+            // schdule the second portion
+            _taskScheduler.Schedule(task5, Priority.High);
+            _taskScheduler.Schedule(task6, Priority.Low);
+            _taskScheduler.Schedule(task7, Priority.Normal);
+            _taskScheduler.Schedule(task8, Priority.High);
+            await _taskScheduler.Stop(CancellationToken.None);
+
+            // Assert
+            CollectionAssert.AreEquivalent(expectedFirstPortion, actual.Take(4));
+            CollectionAssert.AreEquivalent(expectedSecondPortion, actual.Skip(4));
+        } 
+
+        // cancell - отменили сразу после запуска
+        [Test]
+        public async Task TestF00()
+        {
+            // Arrange
+            var actualStarted = new List<int>();
+            var task1 = new TestTask(started: actualStarted, order: 1, delay: 3);
+            var task2 = new TestTask(started: actualStarted, order: 2, delay: 3);
+            _taskScheduler.Initialize(parallelTaskNumber: 2);
+            var cts = new CancellationTokenSource();
+
+            // Act 
+            _taskScheduler.Schedule(task1, Priority.High);
+            _taskScheduler.Schedule(task2, Priority.High);
+            try {
+                var stoppingTask = _taskScheduler.Stop(cts.Token);
+                cts.Cancel();
+                await stoppingTask;
+            }
+            catch (OperationCanceledException)
+            {
+                // do nothing when tasks were cancelled
+            }
+            finally
+            {
+                cts.Dispose();
+            }
+
+            // Assert
+            Assert.Zero(actualStarted.Count());
         }
 
-        public Task Execute()
+        // cancell - успели несколько запустить, но не успули ничего закончить
+        [Test]
+        public async Task TestBar()
         {
-            return Task.Run(() => { lock (actual) actual.Add(order); Thread.Sleep(delay * 1000); });
+            // Arrange
+            const int delayBeforeCancellation = 1000;
+            var actualStarted = new List<int>();
+            var actualCompleted = new List<int>();
+            var task1 = new TestTask(started: actualStarted, completed: actualCompleted, order: 1, delay: 3);
+            var task2 = new TestTask(started: actualStarted, completed: actualCompleted, order: 2, delay: 3);
+            var task3 = new TestTask(started: actualStarted, completed: actualCompleted, order: 3, delay: 3);
+            var task4 = new TestTask(started: actualStarted, completed: actualCompleted, order: 4, delay: 3);
+            _taskScheduler.Initialize(parallelTaskNumber: 2);
+            var cts = new CancellationTokenSource();
+
+            // Act 
+            _taskScheduler.Schedule(task1, Priority.High);
+            _taskScheduler.Schedule(task2, Priority.High);
+            _taskScheduler.Schedule(task3, Priority.High);
+            _taskScheduler.Schedule(task4, Priority.High);
+            try {
+                var stoppingTask = _taskScheduler.Stop(cts.Token);
+                await Task.Delay(delayBeforeCancellation);
+                cts.Cancel();
+                await stoppingTask;
+            }
+            catch (OperationCanceledException)
+            {
+                // do nothing when tasks were cancelled
+            }
+            finally
+            {
+                cts.Dispose();
+            }
+
+            // Assert
+            Assert.AreEqual(2, actualStarted.Count());
+            Assert.Zero(actualCompleted.Count());
+        }
+
+        // cancell - успели несколько запустить и успели чуть меньше закончить
+        [Test]
+        public async Task Test4()
+        {
+            // Arrange
+            const int delayBeforeCancellation = 4000;
+            var actualStarted = new List<int>();
+            var actualCompleted = new List<int>();
+            var task1 = new TestTask(started: actualStarted, completed: actualCompleted, order: 1, delay: 3);
+            var task2 = new TestTask(started: actualStarted, completed: actualCompleted, order: 2, delay: 3);
+            var task3 = new TestTask(started: actualStarted, completed: actualCompleted, order: 3, delay: 3);
+            var task4 = new TestTask(started: actualStarted, completed: actualCompleted, order: 4, delay: 3);
+            var task5 = new TestTask(started: actualStarted, completed: actualCompleted, order: 5, delay: 3);
+            var task6 = new TestTask(started: actualStarted, completed: actualCompleted, order: 6, delay: 3);
+            _taskScheduler.Initialize(parallelTaskNumber: 2);
+            var cts = new CancellationTokenSource();
+
+            // Act 
+            _taskScheduler.Schedule(task1, Priority.High);
+            _taskScheduler.Schedule(task2, Priority.High);
+            _taskScheduler.Schedule(task3, Priority.High);
+            _taskScheduler.Schedule(task4, Priority.High);
+            _taskScheduler.Schedule(task5, Priority.Normal);
+            _taskScheduler.Schedule(task6, Priority.Low);
+            try {
+                var stoppingTask = _taskScheduler.Stop(cts.Token);
+                await Task.Delay(delayBeforeCancellation);
+                cts.Cancel();
+                await stoppingTask;
+            }
+            catch (OperationCanceledException)
+            {
+                // do nothing when tasks were cancelled
+            }
+            finally
+            {
+                cts.Dispose();
+            }
+
+            // Assert
+            Assert.AreEqual(4, actualStarted.Count());
+            Assert.AreEqual(2, actualCompleted.Count());
+        }
+
+        // cancell - успели все запустить и все закончили
+        [Test]
+        public async Task TestBux()
+        {
+            // Arrange
+            const int delayBeforeCancellation = 4000;
+            var actualStarted = new List<int>();
+            var actualCompleted = new List<int>();
+            var task1 = new TestTask(started: actualStarted, completed: actualCompleted, order: 1, delay: 3);
+            var task2 = new TestTask(started: actualStarted, completed: actualCompleted, order: 2, delay: 3);
+            _taskScheduler.Initialize(parallelTaskNumber: 2);
+            var cts = new CancellationTokenSource();
+
+            // Act 
+            _taskScheduler.Schedule(task1, Priority.High);
+            _taskScheduler.Schedule(task2, Priority.High);
+            try {
+                var stoppingTask = _taskScheduler.Stop(cts.Token);
+                await Task.Delay(delayBeforeCancellation);
+                cts.Cancel();
+                await stoppingTask;
+            }
+            catch (OperationCanceledException)
+            {
+                // do nothing when tasks were cancelled
+            }
+            finally
+            {
+                cts.Dispose();
+            }
+
+            // Assert
+            CollectionAssert.AreEquivalent(actualStarted, actualCompleted);
         }
     }
 }

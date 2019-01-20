@@ -82,7 +82,7 @@ namespace Challenge.Lib
 
                 if (taskList.Count == 1)
                 {
-                    taskList[0].Execute().Wait();
+                    taskList[0].Execute().Wait(_token);
                 }
                 else if (taskList.Count > 0)
                 {
@@ -92,7 +92,7 @@ namespace Challenge.Lib
                     foreach (var batch in batches)
                     {
                         var tasks = batch.Select(t => t.Execute());
-                        Task.WaitAll(tasks.ToArray());
+                        Task.WaitAll(tasks.ToArray(), _token);
                     }
                 }
             }, _token));
