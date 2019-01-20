@@ -106,7 +106,7 @@ namespace Challenge.Tests
         }
 
         [Test]
-        public async Task Schedule_RunsAllTasksInRandomOrder_IfParallelismDegreeIsGreaterThenOrEqualToTasksCount()
+        public async Task Schedule_RunsAllTasksInRandomOrder_IfParallelismDegreeIsGreaterThenOrEqualToTasksCount_Async()
         {
             // Arrange
             var expected = new[] { 1, 2, 3 };
@@ -129,7 +129,7 @@ namespace Challenge.Tests
         }
 
         [Test]
-        public async Task Schedule_RunsAllTasksInStrictOrder_IfParallelismDegreeIsEqualToOne()
+        public async Task Schedule_RunsAllTasksInStrictOrder_IfParallelismDegreeIsEqualToOne_Async()
         {
             // Arrange
             var expected = new[] { 1, 2, 3, 5, 4, 8, 7, 6 };
@@ -160,9 +160,8 @@ namespace Challenge.Tests
             CollectionAssert.AreEqual(expected, actual);
         }
 
-        // 5 x ||, 5 tasks, first - long (not necessary), 1-5 random order, but devided in half
         [Test]
-        public async Task Test3()
+        public async Task Schedule_OrdersTasksButRunsThemInRandomOrderWithinBatch_IfParallelismDegreeIsNotOne_First_Async()
         {
             // Arrange
             // Input:    Output:
@@ -174,30 +173,30 @@ namespace Challenge.Tests
             // 6. Low    8. High
             // 7. Normal 7. Normal
             // 8. High   6. Low
-            var expectedFirstPortion = new[] { 1, 2, 3, 5 };
-            var expectedSecondPortion = new[] { 4, 8, 7, 6 };
+            var expectedFirstBatch = new[] { 1, 2, 3, 5 };
+            var expectedSecondBatch = new[] { 4, 8, 7, 6 };
 
             var actual = new List<int>();
-            // the first portion
+            // the first batch
             var task1 = new TestTask(started: actual, order: 1);
             var task2 = new TestTask(started: actual, order: 2);
             var task3 = new TestTask(started: actual, order: 3);
             var task4 = new TestTask(started: actual, order: 4);
-            // the second portion
+            // the second batch
             var task5 = new TestTask(started: actual, order: 5);
             var task6 = new TestTask(started: actual, order: 6);
             var task7 = new TestTask(started: actual, order: 7);
             var task8 = new TestTask(started: actual, order: 8);
-            // parallelTaskNumber == portion size
+            // parallelTaskNumber == batch size
             _taskScheduler.Initialize(4);
 
             // Act
-            // schedule the first portion
+            // schedule the first batch
             _taskScheduler.Schedule(task1, Priority.High);
             _taskScheduler.Schedule(task2, Priority.High);
             _taskScheduler.Schedule(task3, Priority.High);
             _taskScheduler.Schedule(task4, Priority.High);
-            // schdule the second portion
+            // schdule the second batch
             _taskScheduler.Schedule(task5, Priority.Normal);
             _taskScheduler.Schedule(task6, Priority.Low);
             _taskScheduler.Schedule(task7, Priority.Normal);
@@ -205,12 +204,12 @@ namespace Challenge.Tests
             await _taskScheduler.Stop(CancellationToken.None);
 
             // Assert
-            CollectionAssert.AreEquivalent(expectedFirstPortion, actual.Take(4));
-            CollectionAssert.AreEquivalent(expectedSecondPortion, actual.Skip(4));
-        } 
+            CollectionAssert.AreEquivalent(expectedFirstBatch, actual.Take(4));
+            CollectionAssert.AreEquivalent(expectedSecondBatch, actual.Skip(4));
+        }
 
         [Test]
-        public async Task TestBuz3()
+        public async Task Schedule_OrdersTasksButRunsThemInRandomOrderWithinBatch_IfParallelismDegreeIsNotOne_Second_Async()
         {
             // Arrange
             // Input:    Output:
@@ -223,40 +222,40 @@ namespace Challenge.Tests
             // 7. High   6. Normal
             // 8. High   1. Low
             // 9. High   4. Low
-            var expectedFirstPortion = new[] { 2, 5, 7 };
-            var expectedSecondPortion = new[] { 3, 8, 9 };
-            var expectedThirdPortion = new[] { 6, 1, 4};
+            var expectedFirstBatch = new[] { 2, 5, 7 };
+            var expectedSecondBatch = new[] { 3, 8, 9 };
+            var expectedThirdBatch = new[] { 6, 1, 4 };
 
             var actual = new List<int>();
-            // the first portion
+            // the first batch
             var task1 = new TestTask(started: actual, order: 1);
             var task2 = new TestTask(started: actual, order: 2);
             var task3 = new TestTask(started: actual, order: 3);
-            // the second portion
+            // the second batch
             var task4 = new TestTask(started: actual, order: 4);
             var task5 = new TestTask(started: actual, order: 5);
             var task6 = new TestTask(started: actual, order: 6);
 
-            // the third portion
+            // the third batch
             var task7 = new TestTask(started: actual, order: 7);
             var task8 = new TestTask(started: actual, order: 8);
             var task9 = new TestTask(started: actual, order: 9);
 
-            // parallelTaskNumber == portion size
+            // parallelTaskNumber == batch size
             _taskScheduler.Initialize(parallelTaskNumber: 3);
 
             // Act
-            // schedule the first portion
+            // schedule the first batch
             _taskScheduler.Schedule(task1, Priority.Low);
             _taskScheduler.Schedule(task2, Priority.High);
             _taskScheduler.Schedule(task3, Priority.Normal);
 
-            // schdule the second portion
+            // schdule the second batch
             _taskScheduler.Schedule(task4, Priority.Low);
             _taskScheduler.Schedule(task5, Priority.High);
             _taskScheduler.Schedule(task6, Priority.Normal);
-            
-            // schedule the third portion
+
+            // schedule the third batch
             _taskScheduler.Schedule(task7, Priority.High);
             _taskScheduler.Schedule(task8, Priority.High);
             _taskScheduler.Schedule(task9, Priority.High);
@@ -264,14 +263,13 @@ namespace Challenge.Tests
 
             // Assert
             System.Diagnostics.Debug.Print($"{string.Join(", ", actual)}\n");
-            CollectionAssert.AreEquivalent(expectedFirstPortion, actual.Take(3));
-            CollectionAssert.AreEquivalent(expectedSecondPortion, actual.Skip(3).Take(3));
-            CollectionAssert.AreEquivalent(expectedThirdPortion, actual.Skip(6));
-        } 
+            CollectionAssert.AreEquivalent(expectedFirstBatch, actual.Take(3));
+            CollectionAssert.AreEquivalent(expectedSecondBatch, actual.Skip(3).Take(3));
+            CollectionAssert.AreEquivalent(expectedThirdBatch, actual.Skip(6));
+        }
 
-        // cancell - отменили сразу после запуска
         [Test]
-        public async Task TestF00()
+        public async Task Stop_CancelsAllTasksBeforeRun_IfCancellationWasCalledImmediately()
         {
             // Arrange
             var actualStarted = new List<int>();
@@ -283,7 +281,8 @@ namespace Challenge.Tests
             // Act 
             _taskScheduler.Schedule(task1, Priority.High);
             _taskScheduler.Schedule(task2, Priority.High);
-            try {
+            try
+            {
                 var stoppingTask = _taskScheduler.Stop(cts.Token);
                 cts.Cancel();
                 await stoppingTask;
@@ -301,9 +300,8 @@ namespace Challenge.Tests
             Assert.Zero(actualStarted.Count());
         }
 
-        // cancell - успели несколько запустить, но не успули ничего закончить
         [Test]
-        public async Task TestBar()
+        public async Task Stop_CancelsAllRunningTasks_IfCancellationWasCalledBeforeTheirCompletition()
         {
             // Arrange
             const int delayBeforeCancellation = 1000;
@@ -321,7 +319,8 @@ namespace Challenge.Tests
             _taskScheduler.Schedule(task2, Priority.High);
             _taskScheduler.Schedule(task3, Priority.High);
             _taskScheduler.Schedule(task4, Priority.High);
-            try {
+            try
+            {
                 var stoppingTask = _taskScheduler.Stop(cts.Token);
                 await Task.Delay(delayBeforeCancellation);
                 cts.Cancel();
@@ -341,9 +340,8 @@ namespace Challenge.Tests
             Assert.Zero(actualCompleted.Count());
         }
 
-        // cancell - успели несколько запустить и успели чуть меньше закончить
         [Test]
-        public async Task Test4()
+        public async Task Stop_CancelsSomeRunningTasks_IfCancellationWasCalledBeforeTheirCompletition()
         {
             // Arrange
             const int delayBeforeCancellation = 4000;
@@ -365,7 +363,8 @@ namespace Challenge.Tests
             _taskScheduler.Schedule(task4, Priority.High);
             _taskScheduler.Schedule(task5, Priority.Normal);
             _taskScheduler.Schedule(task6, Priority.Low);
-            try {
+            try
+            {
                 var stoppingTask = _taskScheduler.Stop(cts.Token);
                 await Task.Delay(delayBeforeCancellation);
                 cts.Cancel();
@@ -385,9 +384,8 @@ namespace Challenge.Tests
             Assert.AreEqual(2, actualCompleted.Count());
         }
 
-        // cancell - успели все запустить и все закончили
         [Test]
-        public async Task TestBux()
+        public async Task Stop_IgnoreAllRunningTasks_IfCancellationWasCalledAfterTheirCompletition()
         {
             // Arrange
             const int delayBeforeCancellation = 4000;
@@ -401,7 +399,8 @@ namespace Challenge.Tests
             // Act 
             _taskScheduler.Schedule(task1, Priority.High);
             _taskScheduler.Schedule(task2, Priority.High);
-            try {
+            try
+            {
                 var stoppingTask = _taskScheduler.Stop(cts.Token);
                 await Task.Delay(delayBeforeCancellation);
                 cts.Cancel();
@@ -418,6 +417,36 @@ namespace Challenge.Tests
 
             // Assert
             CollectionAssert.AreEquivalent(actualStarted, actualCompleted);
+        }
+
+        private class TestTask : ITask
+        {
+            private readonly List<int> _started;
+            private readonly List<int> _completed;
+            private readonly int _order;
+            private readonly int _delay;
+
+            public TestTask(
+                List<int> started = null,
+                List<int> completed = null,
+                int order = 0,
+                int delay = 1)
+            {
+                _started = started ?? new List<int>();
+                _completed = completed ?? new List<int>();
+                _order = order;
+                _delay = delay;
+            }
+
+            public Task Execute()
+            {
+                return Task.Run(() =>
+                {
+                    lock (_started) _started.Add(_order);
+                    Task.Delay(_delay * 1000).Wait();
+                    lock (_completed) _completed.Add(_order);
+                });
+            }
         }
     }
 }
