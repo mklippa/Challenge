@@ -5,4 +5,8 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Challenge.Lib\Challenge.Lib.csproj" />
+  </ItemGroup>
+
 </Project>
