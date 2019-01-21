@@ -271,12 +271,13 @@ namespace Challenge.Tests
         }
 
         [Test]
-        public async Task Stop_CancelsAllTasksBeforeRun_IfCancellationWasCalledImmediately_Async()
+        public async Task Stop_AllScheduledTasksWillBeCompleted_EvenIfCancellationWasCalledImmediately_Async()
         {
             // Arrange
+            var actualCompleted = new List<int>();
             var actualStarted = new List<int>();
-            var task1 = new TestTask(started: actualStarted, order: 1, delay: 3);
-            var task2 = new TestTask(started: actualStarted, order: 2, delay: 3);
+            var task1 = new TestTask(started: actualStarted, completed: actualCompleted, order: 1, delay: 3);
+            var task2 = new TestTask(started: actualStarted, completed: actualCompleted, order: 2, delay: 3);
             _taskScheduler.Initialize(parallelTaskNumber: 2);
             var cts = new CancellationTokenSource();
 
@@ -299,12 +300,11 @@ namespace Challenge.Tests
             }
 
             // Assert
-            Assert.Zero(actualStarted.Count());
+            CollectionAssert.AreEquivalent(actualStarted, actualCompleted);
         }
 
         [Test]
-        // [Repeat(10)]
-        public async Task Stop_CancelsAllRunningTasks_IfCancellationWasCalledBeforeTheirCompletition_Async()
+        public async Task Stop_AllScheduledTasksWillBeCompleted_EvenIfCancellationWasCalledBeforeTheirCompletition_Async()
         {
             // Arrange
             const int delayBeforeCancellation = 1000;
@@ -324,8 +324,8 @@ namespace Challenge.Tests
             _taskScheduler.Schedule(task4, Priority.High);
             try
             {
-                var stoppingTask = _taskScheduler.Stop(cts.Token);
                 await Task.Delay(delayBeforeCancellation);
+                var stoppingTask = _taskScheduler.Stop(cts.Token);
                 cts.Cancel();
                 await stoppingTask;
             }
@@ -339,10 +339,8 @@ namespace Challenge.Tests
             }
 
             // Assert
-            System.Diagnostics.Debug.WriteLine($"Started: {string.Join(", ", actualStarted)}");
-            System.Diagnostics.Debug.WriteLine($"Completed: {string.Join(", ", actualCompleted)}");
-            Assert.AreEqual(2, actualStarted.Count());
-            Assert.Zero(actualCompleted.Count());
+            Assert.AreEqual(2, actualStarted.Count(), "Started tasks");
+            CollectionAssert.AreEquivalent(actualStarted, actualCompleted);
         }
 
         [Test]
@@ -386,7 +384,7 @@ namespace Challenge.Tests
 
             // Assert
             Assert.AreEqual(4, actualStarted.Count());
-            Assert.AreEqual(2, actualCompleted.Count());
+            CollectionAssert.AreEquivalent(actualStarted, actualCompleted);
         }
 
         [Test]
@@ -406,8 +404,8 @@ namespace Challenge.Tests
             _taskScheduler.Schedule(task2, Priority.High);
             try
             {
-                var stoppingTask = _taskScheduler.Stop(cts.Token);
                 await Task.Delay(delayBeforeCancellation);
+                var stoppingTask = _taskScheduler.Stop(cts.Token);
                 cts.Cancel();
                 await stoppingTask;
             }

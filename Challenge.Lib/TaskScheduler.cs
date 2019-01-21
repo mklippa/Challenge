@@ -55,7 +55,7 @@ namespace Challenge.Lib
                     }
                     ITask t;
                     lock (_taskQueue) t = _taskQueue.Dequeue();
-                    t.Execute().Wait(_token);
+                    t.Execute().Wait();
                 }
                 finally
                 {
