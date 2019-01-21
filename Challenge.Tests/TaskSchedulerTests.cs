@@ -336,6 +336,8 @@ namespace Challenge.Tests
             }
 
             // Assert
+            System.Diagnostics.Debug.WriteLine($"Started: {actualStarted.Count()}");
+            System.Diagnostics.Debug.WriteLine($"Completed: {actualCompleted.Count()}");
             Assert.AreEqual(2, actualStarted.Count());
             Assert.Zero(actualCompleted.Count());
         }
@@ -440,11 +442,13 @@ namespace Challenge.Tests
 
             public Task Execute()
             {
+                lock (_started) _started.Add(_order);
+                System.Diagnostics.Debug.WriteLine($"{_order} started {DateTime.Now.ToString("mm:ss:ffff")}");
                 return Task.Run(() =>
                 {
-                    lock (_started) _started.Add(_order);
                     Task.Delay(_delay * 1000).Wait();
                     lock (_completed) _completed.Add(_order);
+                    System.Diagnostics.Debug.WriteLine($"{_order} finished {DateTime.Now.ToString("mm:ss:ffff")}");
                 });
             }
         }

@@ -10,8 +10,7 @@ namespace Challenge.Lib
 {
     public class TaskScheduler : ITaskScheduler
     {
-        private int _maxDegreeOfParallelism;
-        private volatile int _runningOrQueuedCount;
+        private SemaphoreSlim _semaphore;
         private TaskQueue _taskQueue;
         private List<Task> _tasks;
         private CancellationToken _token;
@@ -29,8 +28,7 @@ namespace Challenge.Lib
                 throw new ArgumentOutOfRangeException(nameof(parallelTaskNumber));
             }
 
-            _maxDegreeOfParallelism = parallelTaskNumber;
-            _runningOrQueuedCount = 0;
+            _semaphore = new SemaphoreSlim(parallelTaskNumber, parallelTaskNumber);
             _taskQueue = new TaskQueue();
             _tasks = new List<Task>();
             _isAlive = true;
@@ -45,59 +43,28 @@ namespace Challenge.Lib
 
             lock(_taskQueue) _taskQueue.Enqueue(priority, task);
 
-            if (_runningOrQueuedCount < _maxDegreeOfParallelism)
+            _tasks.Add(Task.Run(() =>
             {
-                _runningOrQueuedCount++;
-                RunTasks();
-            }
+                _semaphore.Wait(_token);
+
+                try
+                {
+                    if (_token.IsCancellationRequested)
+                    {
+                        _token.ThrowIfCancellationRequested();
+                    }
+                    ITask t;
+                    lock (_taskQueue) t = _taskQueue.Dequeue();
+                    t.Execute().Wait(_token);
+                }
+                finally
+                {
+                    _semaphore.Release();
+                }
+            }, _token));
 
             return true;
         }
-
-        private void RunTasks()
-        {
-            lock(_tasks) _tasks.Add(Task.Run(() =>
-            {
-                var taskList = new List<ITask>();
-
-                while (true)
-                {
-                    lock (_taskQueue)
-                    {
-                        if (_taskQueue.IsEmpty)
-                        {
-                            _runningOrQueuedCount--;
-                            break;
-                        }
-
-                        var t = _taskQueue.Dequeue();
-                        taskList.Add(t);
-                    }
-                }
-
-                if (_token.IsCancellationRequested)
-                {
-                    _token.ThrowIfCancellationRequested();
-                }
-
-                if (taskList.Count == 1)
-                {
-                    taskList[0].Execute().Wait(_token);
-                }
-                else if (taskList.Count > 0)
-                {
-                    var batches = taskList.GroupBy(
-                        task => taskList.IndexOf(task) / _maxDegreeOfParallelism);
-
-                    foreach (var batch in batches)
-                    {
-                        var tasks = batch.Select(t => t.Execute());
-                        Task.WaitAll(tasks.ToArray(), _token);
-                    }
-                }
-            }, _token));
-        }
-
         public Task Stop(CancellationToken token)
         {
             if(!_isAlive)
