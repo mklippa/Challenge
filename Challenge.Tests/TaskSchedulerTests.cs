@@ -303,6 +303,7 @@ namespace Challenge.Tests
         }
 
         [Test]
+        // [Repeat(10)]
         public async Task Stop_CancelsAllRunningTasks_IfCancellationWasCalledBeforeTheirCompletition_Async()
         {
             // Arrange
@@ -338,8 +339,8 @@ namespace Challenge.Tests
             }
 
             // Assert
-            System.Diagnostics.Debug.WriteLine($"Started: {actualStarted.Count()}");
-            System.Diagnostics.Debug.WriteLine($"Completed: {actualCompleted.Count()}");
+            System.Diagnostics.Debug.WriteLine($"Started: {string.Join(", ", actualStarted)}");
+            System.Diagnostics.Debug.WriteLine($"Completed: {string.Join(", ", actualCompleted)}");
             Assert.AreEqual(2, actualStarted.Count());
             Assert.Zero(actualCompleted.Count());
         }
