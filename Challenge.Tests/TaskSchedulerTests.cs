@@ -262,7 +262,7 @@ namespace Challenge.Tests
             await _taskScheduler.Stop(CancellationToken.None);
 
             // Assert
-            System.Diagnostics.Debug.Print($"{string.Join(", ", actual)}\n");
+            System.Diagnostics.Debug.WriteLine(string.Join(", ", actual));
             CollectionAssert.AreEquivalent(expectedFirstBatch, actual.Take(3));
             CollectionAssert.AreEquivalent(expectedSecondBatch, actual.Skip(3).Take(3));
             CollectionAssert.AreEquivalent(expectedThirdBatch, actual.Skip(6));
@@ -443,12 +443,12 @@ namespace Challenge.Tests
             public Task Execute()
             {
                 lock (_started) _started.Add(_order);
-                System.Diagnostics.Debug.WriteLine($"{_order} started {DateTime.Now.ToString("mm:ss:ffff")}");
+                // System.Diagnostics.Debug.WriteLine($"{_order} started {DateTime.Now.ToString("mm:ss:ffff")}");
                 return Task.Run(() =>
                 {
                     Task.Delay(_delay * 1000).Wait();
                     lock (_completed) _completed.Add(_order);
-                    System.Diagnostics.Debug.WriteLine($"{_order} finished {DateTime.Now.ToString("mm:ss:ffff")}");
+                    // System.Diagnostics.Debug.WriteLine($"{_order} finished {DateTime.Now.ToString("mm:ss:ffff")}");
                 });
             }
         }

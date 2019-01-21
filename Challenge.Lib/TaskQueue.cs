@@ -36,9 +36,10 @@ namespace Challenge.Lib
 
             var task = tasks.Dequeue();
             if (!tasks.Any())
-            {
                 _prioritizedTasks.Remove(priority);
-            }
+
+            if (IsEmpty)
+                _counter = 0;
 
             return task;
         }
